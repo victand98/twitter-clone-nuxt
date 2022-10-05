@@ -14,17 +14,29 @@
       />
 
       <div>
-        <button @click="handleLogin">Submit</button>
+        <button @click="handleLogin">Login</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const { login } = useAuth();
+
 const data = reactive({
   password: "",
   username: "",
+  loading: false,
 });
 
-const handleLogin = () => {};
+const handleLogin = async () => {
+  data.loading = true;
+  try {
+    await login({ username: data.username, password: data.password });
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    data.loading = false;
+  }
+};
 </script>
