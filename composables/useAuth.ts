@@ -1,9 +1,11 @@
 import { User } from "~~/types";
+import jwtDecode from "jwt-decode";
+import { JwtPayload } from "jsonwebtoken";
 
 export default () => {
   const useAuthToken = () => useState<string>("auth_token");
-
   const useAuthUser = () => useState<Omit<User, "password">>("auth_user");
+  const useAuthLoading = () => useState<boolean>("auth_loading", () => true);
 
   const setToken = (newToken: string) => {
     const authToken = useAuthToken();
@@ -13,6 +15,11 @@ export default () => {
   const setUser = (newUser: Omit<User, "password">) => {
     const authToken = useAuthUser();
     authToken.value = newUser;
+  };
+
+  const setAuthLoading = (value: boolean) => {
+    const authLoading = useAuthLoading();
+    authLoading.value = value;
   };
 
   const login = ({
@@ -62,17 +69,42 @@ export default () => {
     });
   };
 
+  const reRefreshAccessToken = () => {
+    const authToken = useAuthToken();
+
+    if (!authToken.value) return;
+
+    const jwt = jwtDecode(authToken.value) as JwtPayload;
+    const newRefreshTime = jwt.exp - 60000;
+
+    setTimeout(async () => {
+      await refreshToken();
+      reRefreshAccessToken();
+    }, newRefreshTime);
+  };
+
   const initAuth = () => {
     return new Promise(async (resolve, reject) => {
+      setAuthLoading(true);
       try {
         await refreshToken();
         await getUser();
+
+        reRefreshAccessToken();
         resolve(true);
       } catch (error) {
         reject(error);
+      } finally {
+        setAuthLoading(false);
       }
     });
   };
 
-  return { login, useAuthUser, initAuth, useAuthToken };
+  return {
+    login,
+    useAuthUser,
+    initAuth,
+    useAuthToken,
+    useAuthLoading,
+  };
 };
