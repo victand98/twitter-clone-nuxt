@@ -3,6 +3,7 @@ import { createMediaFile } from "~~/server/db/mediaFiles";
 import { createTweet } from "~~/server/db/tweets";
 import { tweetTransformer } from "~~/server/transformers/tweet";
 import { uploadToCloudinary } from "~~/server/utils/cloudinary";
+import { NewTweet } from "~~/types";
 
 export default defineEventHandler(async (event) => {
   const form = formidable({});
@@ -21,10 +22,17 @@ export default defineEventHandler(async (event) => {
 
   const userId = event.context?.auth?.user?.id;
 
-  const tweetData = {
+  const tweetData: NewTweet = {
     text: fields.text as string,
     authorId: userId,
   };
+
+  const replyTo = fields.replyTo;
+
+  if (replyTo && replyTo !== null) {
+    tweetData.replyToId = replyTo as string;
+  }
+
   const tweet = await createTweet(tweetData);
 
   const filePromises = Object.keys(files).map(async (key) => {

@@ -1,4 +1,5 @@
 import { TweetFormData } from "~~/components/Tweet/Form/Input.vue";
+import { TweetItem } from "~~/types";
 
 export default () => {
   const postTweet = (formData: TweetFormData) => {
@@ -16,5 +17,19 @@ export default () => {
     });
   };
 
-  return { postTweet };
+  const getHomeTweets = () => {
+    return new Promise<{ tweets: TweetItem[] }>(async (resolve, reject) => {
+      try {
+        const response = await useFetchApi<{ tweets: TweetItem[] }>(
+          "/api/tweets",
+          { method: "GET" }
+        );
+        resolve(response);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  return { postTweet, getHomeTweets };
 };
