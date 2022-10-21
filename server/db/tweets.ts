@@ -11,3 +11,13 @@ export const getTweets = (params: Prisma.TweetFindManyArgs = {}) => {
     ...params,
   });
 };
+
+export const getTweetById = (
+  id: string,
+  params: Partial<Prisma.TweetFindUniqueArgs> = {}
+) => {
+  return prisma.tweet.findUnique({
+    ...params,
+    where: { ...params.where, id },
+  });
+};

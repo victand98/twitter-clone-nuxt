@@ -6,12 +6,13 @@ export default () => {
     const form = new FormData();
 
     form.append("text", formData.text);
+    form.append("replyTo", formData.replyTo);
 
     formData.mediaFiles.forEach((mediaFile, index) => {
       form.append(`media_file_${index}`, mediaFile);
     });
 
-    return useFetchApi("/api/user/tweets", {
+    return useFetchApi<{ tweet: TweetItem }>("/api/user/tweets", {
       method: "POST",
       body: form,
     });
@@ -31,5 +32,19 @@ export default () => {
     });
   };
 
-  return { postTweet, getHomeTweets };
+  const getTweetById = (id: string) => {
+    return new Promise<{ tweet: TweetItem }>(async (resolve, reject) => {
+      try {
+        const response = await useFetchApi<{ tweet: TweetItem }>(
+          `/api/tweets/${id}`,
+          { method: "GET" }
+        );
+        resolve(response);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  return { postTweet, getHomeTweets, getTweetById };
 };

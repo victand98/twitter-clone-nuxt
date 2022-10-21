@@ -10,8 +10,9 @@
       :class="[twitterBorderColor, defaultTransition]"
       v-for="tweet in props.tweets"
       :key="tweet.id"
+      @click.native="redirect(tweet.id)"
     >
-      <TweetItem :tweet="tweet" />
+      <TweetItem :tweet="tweet" compact />
     </div>
   </div>
 </template>
@@ -28,4 +29,8 @@ const { twitterBorderColor, defaultTransition } = useTailwindConfig();
 const props = defineProps<TweetListFeedProps>();
 
 const isEmptyArray = computed(() => props.tweets.length === 0);
+
+const redirect = (tweetId: string) => {
+  navigateTo({ path: `/status/${tweetId}` });
+};
 </script>

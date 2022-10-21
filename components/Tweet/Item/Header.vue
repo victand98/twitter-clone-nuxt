@@ -14,8 +14,7 @@
       }}</span>
 
       <span class="ml-3 text-sm font-medium text-gray-400">
-        <nuxt-link to="#">@{{ author.username }}</nuxt-link
-        >. {{ postedAt }}
+        <nuxt-link to="#">@{{ author.username }}</nuxt-link> . {{ postedAt }}
       </span>
 
       <p v-if="replyTo" class="text-sm">
