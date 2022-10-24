@@ -1,11 +1,17 @@
 <template>
   <div class="flex items-center justify-around w-full">
-    <TweetItemActionsIcon color="blue" :size="size">
+    <TweetItemActionsIcon
+      color="blue"
+      :size="size"
+      @on-click="emits('onCommentClick')"
+    >
       <template v-slot:icon="{ classes }">
         <ChatBubbleOvalLeftEllipsisIcon :class="classes" />
       </template>
 
-      <template v-slot:default v-if="showStats">{{ repliesCount }}</template>
+      <template v-slot:default v-if="showStats">{{
+        props.repliesCount
+      }}</template>
     </TweetItemActionsIcon>
 
     <TweetItemActionsIcon color="green" :size="size">
@@ -53,14 +59,17 @@ export interface TweetItemActionsProps {
   repliesCount: TweetItem["repliesCount"];
   compact?: boolean;
 }
+export interface TweetItemActionsEmits {
+  (event: "onCommentClick"): void;
+}
 
 const props = withDefaults(defineProps<TweetItemActionsProps>(), {
   compact: false,
 });
-const { repliesCount, compact } = props;
+const emits = defineEmits<TweetItemActionsEmits>();
 
-const showStats = computed(() => compact);
-const size = computed(() => (compact ? 5 : 8));
+const showStats = computed(() => props.compact);
+const size = computed(() => (props.compact ? 5 : 8));
 
 const generateRandomNumber = () => Math.floor(Math.random() * 100);
 </script>

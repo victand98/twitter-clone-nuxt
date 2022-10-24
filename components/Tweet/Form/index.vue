@@ -5,6 +5,11 @@
     </div>
 
     <div v-else>
+      <TweetItem
+        :tweet="props.replyTo"
+        v-if="props.replyTo && props.showReplyTo"
+        hideActions
+      />
       <TweetFormInput
         :user="props.user"
         @onSubmit="handleFormSubmit"
@@ -15,13 +20,14 @@
 </template>
 
 <script setup lang="ts">
-import { TweetItem, User } from "~~/types";
+import type { TweetItem, User } from "~~/types";
 import { TweetFormData } from "./Input.vue";
 
 export interface TweetFormProps {
   user: Omit<User, "password">;
   placeholder?: string;
   replyTo?: TweetItem | null;
+  showReplyTo?: boolean;
 }
 export interface TweetFormEmits {
   (event: "onSuccess", data: TweetItem): void;
@@ -32,6 +38,7 @@ const { postTweet } = useTweets();
 const props = withDefaults(defineProps<TweetFormProps>(), {
   placeholder: "What's happening?",
   replyTo: null,
+  showReplyTo: false,
 });
 const emits = defineEmits<TweetFormEmits>();
 

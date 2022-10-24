@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isEmptyArray" class="p-4">
-      <p class="text-center text-gray-500">There are no tweets :(</p>
+      <p class="text-center text-gray-500">There are no tweets 😢</p>
     </div>
 
     <div
@@ -10,7 +10,7 @@
       :class="[twitterBorderColor, defaultTransition]"
       v-for="tweet in props.tweets"
       :key="tweet.id"
-      @click.native="redirect(tweet.id)"
+      @click.native="redirect(tweet)"
     >
       <TweetItem :tweet="tweet" compact />
     </div>
@@ -30,7 +30,7 @@ const props = defineProps<TweetListFeedProps>();
 
 const isEmptyArray = computed(() => props.tweets.length === 0);
 
-const redirect = (tweetId: string) => {
-  navigateTo({ path: `/status/${tweetId}` });
+const redirect = (tweet: TweetItem) => {
+  navigateTo({ path: `/status/${tweet.id}` });
 };
 </script>

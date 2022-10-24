@@ -1,11 +1,11 @@
 <template>
   <div>
-    <TweetItem :tweet="tweet" />
+    <TweetItem :tweet="props.tweet" />
 
     <TweetForm
       placeholder="Type here your reply"
-      :user="user"
-      :replyTo="tweet"
+      :user="props.user"
+      :replyTo="props.tweet"
       @onSuccess="handleSuccess"
     />
 
@@ -20,11 +20,10 @@ const props = defineProps<{
   tweet: TweetItem;
   user: Omit<User, "password">;
 }>();
-const { tweet, user } = props;
 
-const replies = computed(() => tweet.replies || []);
+const replies = computed(() => props.tweet?.replies || []);
 
-const handleSuccess = (data: TweetItem) => {
-  navigateTo({ path: `/status/${data.id}` });
+const handleSuccess = (tweet: TweetItem) => {
+  navigateTo({ path: `/status/${tweet.id}` });
 };
 </script>

@@ -10,9 +10,9 @@ export interface TweetItem {
   id: string;
   text: string;
   mediaFiles: MediaFile[];
-  author: User | null;
-  replies: TweetItem[];
-  replyTo: TweetItem | null;
+  author?: User | null;
+  replies?: TweetItem[];
+  replyTo?: TweetItem | null;
   repliesCount: number;
   postedAt: string;
 }

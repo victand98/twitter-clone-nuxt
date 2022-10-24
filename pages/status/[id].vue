@@ -24,16 +24,12 @@ watch(
   () => getTweet()
 );
 
-const getTweetIdFromRoute = () => {
-  const route = useRoute();
-  return route.params.id;
-};
+const getTweetIdFromRoute = () => useRoute().params.id;
 
 const getTweet = async () => {
   loading.value = true;
   try {
-    const tweetId = getTweetIdFromRoute();
-    const response = await getTweetById(tweetId as string);
+    const response = await getTweetById(getTweetIdFromRoute() as string);
     tweet.value = response.tweet;
   } catch (error) {
     console.log("error", error);

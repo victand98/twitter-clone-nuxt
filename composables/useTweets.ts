@@ -2,6 +2,14 @@ import { TweetFormData } from "~~/components/Tweet/Form/Input.vue";
 import { TweetItem } from "~~/types";
 
 export default () => {
+  const usePostTweetModal = () => useState("post_tweet_modal", () => false);
+  const useReplyTweet = () => useState<TweetItem>("reply_tweet", () => null);
+
+  const setReplyTo = (tweet: TweetItem) => {
+    const replyTweet = useReplyTweet();
+    replyTweet.value = tweet;
+  };
+
   const postTweet = (formData: TweetFormData) => {
     const form = new FormData();
 
@@ -46,5 +54,25 @@ export default () => {
     });
   };
 
-  return { postTweet, getHomeTweets, getTweetById };
+  const closePostTweetModal = () => {
+    const postTweetModal = usePostTweetModal();
+    postTweetModal.value = false;
+  };
+
+  const openPostTweetModal = (tweet: TweetItem = null) => {
+    const postTweetModal = usePostTweetModal();
+    postTweetModal.value = true;
+
+    setReplyTo(tweet);
+  };
+
+  return {
+    postTweet,
+    getHomeTweets,
+    getTweetById,
+    closePostTweetModal,
+    usePostTweetModal,
+    openPostTweetModal,
+    useReplyTweet,
+  };
 };

@@ -11,7 +11,7 @@
           <!-- left sidebar -->
           <div class="hidden md:block xs:col-span-1 xl:col-span-2">
             <div class="sticky top-0">
-              <SidebarLeft />
+              <SidebarLeft @on-tweet="handleOpenTweetModal" />
             </div>
           </div>
 
@@ -30,17 +30,54 @@
       </div>
 
       <AuthPage v-else />
+
+      <UIModal :isOpen="postTweetModal" @onClose="handleModalClose">
+        <TweetForm
+          :user="user"
+          @on-success="handleFormSuccess"
+          :replyTo="replyTweet"
+          showReplyTo
+        />
+      </UIModal>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { TweetItem } from "./types";
+
 const darkMode = ref(false);
 const { useAuthUser, initAuth, useAuthLoading } = useAuth();
 const isAuthLoading = useAuthLoading();
+const {
+  closePostTweetModal,
+  usePostTweetModal,
+  openPostTweetModal,
+  useReplyTweet,
+} = useTweets();
 const user = useAuthUser();
+const postTweetModal = usePostTweetModal();
+const emitter = useEmitter();
+const replyTweet = useReplyTweet();
+
+emitter.$on("replyTweet", (tweet: TweetItem) => {
+  openPostTweetModal(tweet);
+});
 
 onBeforeMount(() => {
   initAuth();
 });
+
+const handleFormSuccess = (tweet: TweetItem) => {
+  closePostTweetModal();
+  navigateTo({ path: `/status/${tweet.id}` });
+};
+
+const handleModalClose = () => {
+  closePostTweetModal();
+};
+
+const handleOpenTweetModal = () => {
+  openPostTweetModal(null);
+};
 </script>

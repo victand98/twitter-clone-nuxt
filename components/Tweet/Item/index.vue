@@ -19,24 +19,31 @@
         <img :src="image.url" :alt="image.id" class="w-full rounded-2xl" />
       </div>
 
-      <div class="mt-2">
-        <TweetItemActions v-bind="tweet" :compact="props.compact" />
+      <div class="mt-2" v-if="!props.hideActions">
+        <TweetItemActions
+          v-bind="tweet"
+          :compact="props.compact"
+          @on-comment-click="handleCommentClick"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { TweetItem } from "~~/types";
+import type { TweetItem } from "~~/types";
 
 export interface TweetItemProps {
   tweet: TweetItem;
   compact?: boolean;
+  hideActions?: boolean;
 }
 
 const { twitterBorderColor } = useTailwindConfig();
+const emitter = useEmitter();
 const props = withDefaults(defineProps<TweetItemProps>(), {
   compact: false,
+  hideActions: false,
 });
 
 const tweetBodyWrapper = computed(() =>
@@ -44,4 +51,8 @@ const tweetBodyWrapper = computed(() =>
 );
 
 const textSize = computed(() => (props.compact ? "text-base" : "text-2xl"));
+
+const handleCommentClick = () => {
+  emitter.$emit("replyTweet", props.tweet);
+};
 </script>
