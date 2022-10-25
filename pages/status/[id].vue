@@ -24,12 +24,16 @@ watch(
   () => getTweet()
 );
 
-const getTweetIdFromRoute = () => useRoute().params.id;
+onBeforeMount(() => {
+  getTweet();
+});
 
 const getTweet = async () => {
   loading.value = true;
+
   try {
-    const response = await getTweetById(getTweetIdFromRoute() as string);
+    const id = useRoute().params.id;
+    const response = await getTweetById(id as string);
     tweet.value = response.tweet;
   } catch (error) {
     console.log("error", error);
@@ -37,8 +41,4 @@ const getTweet = async () => {
     loading.value = false;
   }
 };
-
-onBeforeMount(() => {
-  getTweet();
-});
 </script>

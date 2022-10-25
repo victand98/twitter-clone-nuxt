@@ -1,3 +1,4 @@
+import { SearchParams } from "ohmyfetch";
 import { TweetFormData } from "~~/components/Tweet/Form/Input.vue";
 import { TweetItem } from "~~/types";
 
@@ -26,12 +27,12 @@ export default () => {
     });
   };
 
-  const getHomeTweets = () => {
+  const getTweets = (params: SearchParams = {}) => {
     return new Promise<{ tweets: TweetItem[] }>(async (resolve, reject) => {
       try {
         const response = await useFetchApi<{ tweets: TweetItem[] }>(
           "/api/tweets",
-          { method: "GET" }
+          { method: "GET", params }
         );
         resolve(response);
       } catch (error) {
@@ -68,7 +69,7 @@ export default () => {
 
   return {
     postTweet,
-    getHomeTweets,
+    getTweets,
     getTweetById,
     closePostTweetModal,
     usePostTweetModal,

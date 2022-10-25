@@ -100,11 +100,27 @@ export default () => {
     });
   };
 
+  const logout = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await useFetchApi("/api/auth/logout", {
+          method: "POST",
+        });
+        setToken(null);
+        setUser(null);
+        resolve(true);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
   return {
     login,
     useAuthUser,
     initAuth,
     useAuthToken,
     useAuthLoading,
+    logout,
   };
 };
